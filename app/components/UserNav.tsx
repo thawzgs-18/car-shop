@@ -5,9 +5,11 @@ import Link from "next/link";
 import Image from "next/image";
 import { UserCircle, ChevronDown, LogOut, Settings } from "lucide-react";
 import { signOut } from "next-auth/react";
+import { ShieldCheck } from 'lucide-react';
 
 export default function UserNav({ session }: { session: any }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const isAdmin = session?.user?.email === "thang18012005@gmail.com";
 
   return (
     <div className="relative">
@@ -38,6 +40,15 @@ export default function UserNav({ session }: { session: any }) {
                 <p className="text-[10px] text-gray-400 font-bold uppercase">Xin chào</p>
                 <p className="text-sm font-black text-gray-800 truncate">{session.user.name}</p>
               </div>
+              {isAdmin && (
+            <Link 
+              href="/admin/dashboard" 
+              className="flex items-center gap-2 px-4 py-2.5 text-sm font-bold text-blue-600 rounded-lg hover:bg-blue-50 transition"
+              onClick={() => setIsDropdownOpen(false)}
+            >
+              <ShieldCheck size={16} /> Quản lý hệ thống
+            </Link>
+          )}
               <Link 
                 href="/profile" 
                 className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-gray-700 rounded-lg hover:bg-red-50 hover:text-red-600 transition"

@@ -1,0 +1,34 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlserver"
+  // CHỈ để dòng này, không dán link trực tiếp vào đây
+  url      = env("DATABASE_URL")
+}
+
+model Car {
+  id           String   @id @default(uuid())
+  name         String   // Tên xe & Phiên bản
+  brand        String   // Hãng xe
+  year         Int      // Năm sản xuất
+  mileage      Int      // Số KM đã đi
+  price        Float    // Giá bán
+  image        String?  // Đường dẫn ảnh xe
+  
+  // Trạng thái kiểm duyệt: 'pending' (chờ duyệt), 'approved' (đã duyệt), 'rejected' (từ chối)
+  status       String   @default("pending") 
+  
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Order {
+  id           String   @id @default(uuid())
+  customerName String
+  phoneNumber  String   // Số điện thoại khách gọi từ nút "Liên hệ ngay"
+  carId        String
+  status       String   @default("new") // 'new', 'contacted', 'completed'
+  createdAt    DateTime @default(now())
+}
