@@ -3,31 +3,69 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql" // Đảm bảo đã đổi từ sqlserver sang postgresql
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-model Car {
-  id           String   @id @default(uuid())
-  name         String   // Tên xe & Phiên bản
-  brand        String   // Hãng xe
-  year         Int      // Năm sản xuất
-  mileage      Int      // Số KM đã đi
-  price        Float    // Giá bán
-  image        String?  // Đường dẫn ảnh xe
-  
-  // Trạng thái kiểm duyệt: 'pending' (chờ duyệt), 'approved' (đã duyệt), 'rejected' (từ chối)
-  status       String   @default("pending") 
-  
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+// 1. Quản lý tài khoản người dùng
+model User {
+  id            String    @id @default(uuid())
+  name          String?
+  email         String    @unique
+  password      String
+  image         String?
+  role          String    @default("USER") // USER, ADMIN
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  news          News[]    // Quan hệ: Một user có thể viết nhiều tin tức
 }
 
+// 2. Quản lý xe (Chi tiết theo ảnh mẫu)
+model Car {
+  id           String   @id @default(uuid())
+  name         String   // Tên xe & Phiên bản (vd: Ford Ranger Wildtrak)
+  brand        String   // Hãng xe (vd: Ford)
+  price        Float    // Giá bán
+  year         Int      // Năm sản xuất
+  km           Int      @default(0) // Số KM đã đi
+  type         String   // Loại xe (vd: Pickup, SUV, Sedan)
+  location     String   // Địa điểm bán (vd: Bình Dương)
+  image        String   // Đường dẫn ảnh chính
+  status       String   @default("Mới") // Mới, Đã sử dụng
+  transmission String   // Hộp số (vd: Tự động 10 cấp)
+  fuel         String   // Nhiên liệu (vd: Dầu Diesel)
+  engine       String   // Động cơ (vd: Bi-Turbo 2.0L)
+  features     String[] // Các tính năng (vd: Camera 360, hỗ trợ đỗ xe...)
+  description  String   @db.Text
+  
+  // Trạng thái kiểm duyệt hệ thống
+  adminStatus  String   @default("pending") // pending, approved, rejected
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  orders       Order[]
+}
+
+// 3. Quản lý tin tức
+model News {
+  id        String   @id @default(uuid())
+  title     String
+  slug      String   @unique
+  content   String   @db.Text
+  image     String?
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// 4. Quản lý Orders (Yêu cầu gọi lại/Mua xe)
 model Order {
   id           String   @id @default(uuid())
   customerName String
-  phoneNumber  String   // Số điện thoại khách gọi từ nút "Liên hệ ngay"
+  phoneNumber  String
+  message      String?  @db.Text
   carId        String
-  status       String   @default("new") // 'new', 'contacted', 'completed'
+  car          Car      @relation(fields: [carId], references: [id])
+  status       String   @default("new") // new, contacted, completed
   createdAt    DateTime @default(now())
 }

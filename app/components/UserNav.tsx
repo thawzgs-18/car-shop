@@ -42,7 +42,7 @@ export default function UserNav({ session }: { session: any }) {
               </div>
               {isAdmin && (
             <Link 
-              href="/admin/dashboard" 
+              href="/admin/cars" 
               className="flex items-center gap-2 px-4 py-2.5 text-sm font-bold text-blue-600 rounded-lg hover:bg-blue-50 transition"
               onClick={() => setIsDropdownOpen(false)}
             >

@@ -1,38 +1,45 @@
-export default function AdminUsersPage() {
+import prisma from "@/lib/prisma";
+
+export const dynamic = "force-dynamic";
+
+export default async function AdminUsersPage() {
+  const users = await prisma.user.findMany({
+    orderBy: { createdAt: "desc" },
+  });
+
   return (
-    <div className="bg-white rounded-xl shadow-sm p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-bold">Quản lý Tài khoản</h2>
-        <button className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium">
-          Thêm nhân viên
-        </button>
+    <div className="p-6 bg-white rounded-lg shadow-sm">
+      <h2 className="text-2xl font-bold text-gray-800 mb-6">Quản lý người dùng</h2>
+      <div className="overflow-x-auto">
+        <table className="w-full text-left">
+          <thead className="bg-gray-50 border-b">
+            <tr>
+              <th className="p-4 text-sm font-semibold text-gray-600">Người dùng</th>
+              <th className="p-4 text-sm font-semibold text-gray-600">Email</th>
+              <th className="p-4 text-sm font-semibold text-gray-600">Vai trò</th>
+              <th className="p-4 text-sm font-semibold text-gray-600">Ngày tham gia</th>
+            </tr>
+          </thead>
+          <tbody>
+            {users.map((user) => (
+              <tr key={user.id} className="border-b hover:bg-gray-50 transition">
+                <td className="p-4 font-medium text-gray-700">{user.name || "N/A"}</td>
+                <td className="p-4 text-gray-600">{user.email}</td>
+                <td className="p-4">
+                  <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                    user.role === 'ADMIN' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'
+                  }`}>
+                    {user.role}
+                  </span>
+                </td>
+                <td className="p-4 text-sm text-gray-500">
+                  {new Date(user.createdAt).toLocaleDateString('vi-VN')}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
-      <table className="w-full text-left border-collapse">
-        <thead>
-          <tr className="border-b text-gray-400 text-sm">
-            <th className="pb-4">NGƯỜI DÙNG</th>
-            <th className="pb-4">EMAIL</th>
-            <th className="pb-4">VAI TRÒ</th>
-            <th className="pb-4">THAO TÁC</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr className="border-b hover:bg-gray-50 transition-colors">
-            <td className="py-4 flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs">TP</div>
-              <span className="font-medium">Thắng Phạm Văn</span>
-            </td>
-            <td className="py-4 text-gray-600">thangpham@example.com</td>
-            <td className="py-4">
-              <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs">Admin</span>
-            </td>
-            <td className="py-4">
-              <button className="text-blue-600 hover:underline mr-3">Sửa</button>
-              <button className="text-red-600 hover:underline">Khóa</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
     </div>
   );
 }

@@ -1,26 +1,33 @@
-export default function AdminNewsPage() {
+import prisma from "@/lib/prisma";
+import Link from "next/link";
+
+export default async function NewsSection() {
+  const news = await prisma.news.findMany({
+    take: 3, // Chỉ lấy 3 tin mới nhất
+    orderBy: { createdAt: 'desc' }
+  });
+
   return (
-    <div className="bg-white rounded-xl shadow-sm p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-bold">Quản lý Tin tức</h2>
-        <button className="bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium">
-          Viết bài mới
-        </button>
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Một mẫu bài viết */}
-        <div className="flex gap-4 border p-3 rounded-xl hover:shadow-md transition-shadow">
-          <div className="w-24 h-20 bg-gray-200 rounded-lg flex-shrink-0"></div>
-          <div>
-            <h3 className="font-bold text-sm line-clamp-2">Xu hướng lựa chọn xe bán tải Ford Ranger trong năm 2026</h3>
-            <p className="text-xs text-gray-500 mt-1">Ngày đăng: 24/04/2026</p>
-            <div className="mt-2 flex gap-2">
-              <button className="text-xs text-blue-600">Sửa</button>
-              <button className="text-xs text-red-600">Xóa</button>
+    <section className="py-16 bg-gray-50">
+      <div className="container mx-auto px-4">
+        <h2 className="text-3xl font-bold mb-10 text-center uppercase tracking-widest">Tin tức nổi bật</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {news.map((item) => (
+            <div key={item.id} className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300">
+              <div className="h-48 bg-gray-200">
+                <img src={item.image || "/api/placeholder/400/200"} alt={item.title} className="w-full h-full object-cover" />
+              </div>
+              <div className="p-6">
+                <h3 className="font-bold text-xl mb-3 line-clamp-2 hover:text-red-600 transition">{item.title}</h3>
+                <p className="text-gray-500 text-sm line-clamp-3 mb-4">{item.content}</p>
+                <Link href={`/news/${item.slug}`} className="text-red-600 font-semibold text-sm hover:underline">
+                  Đọc tiếp →
+                </Link>
+              </div>
             </div>
-          </div>
+          ))}
         </div>
       </div>
-    </div>
+    </section>
   );
 }

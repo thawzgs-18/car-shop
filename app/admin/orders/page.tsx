@@ -1,27 +1,41 @@
-export default function AdminOrdersPage() {
+import prisma from "@/lib/prisma";
+
+export const dynamic = "force-dynamic";
+
+export default async function AdminOrdersPage() {
+  const orders = await prisma.order.findMany({
+    include: { car: true },
+    orderBy: { createdAt: "desc" },
+  });
+
   return (
-    <div className="bg-white rounded-xl shadow-sm p-6">
-      <h2 className="text-xl font-bold mb-6">Yêu cầu liên hệ mua xe</h2>
-      <div className="space-y-4">
-        {/* Mẫu một yêu cầu khách hàng */}
-        <div className="flex items-center justify-between p-4 border rounded-xl bg-gray-50">
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="font-bold text-gray-800">Khách hàng: Nguyễn Văn A</span>
-              <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded">Mới</span>
+    <div className="p-6 bg-white rounded-lg shadow-sm">
+      <h2 className="text-2xl font-bold text-gray-800 mb-6">Yêu cầu khách hàng</h2>
+      <div className="grid gap-4">
+        {orders.map((order) => (
+          <div key={order.id} className="border p-4 rounded-xl flex justify-between items-center bg-gray-50/50">
+            <div>
+              <div className="flex items-center gap-3 mb-1">
+                <span className="font-bold text-lg">{order.customerName}</span>
+                <span className="text-blue-600 font-mono">{order.phoneNumber}</span>
+              </div>
+              <p className="text-gray-600 text-sm">
+                Quan tâm xe: <span className="font-medium text-black">{order.car.name}</span>
+              </p>
+              {order.message && (
+                <p className="mt-2 text-sm italic text-gray-500 italic">"{order.message}"</p>
+              )}
             </div>
-            <p className="text-sm text-gray-600 mt-1">
-              Quan tâm xe: <span className="font-medium">Ford Ranger Wildtrak</span>
-            </p>
-            <p className="text-sm text-red-600 font-medium">SĐT: 0865.372.637</p>
+            <div className="text-right">
+              <div className="text-xs text-gray-400 mb-2">
+                {new Date(order.createdAt).toLocaleString('vi-VN')}
+              </div>
+              <button className="bg-blue-600 text-white px-4 py-1.5 rounded-lg text-sm hover:bg-blue-700">
+                Đã liên hệ
+              </button>
+            </div>
           </div>
-          <div className="text-right">
-            <p className="text-xs text-gray-400 mb-2">2 giờ trước</p>
-            <button className="bg-white border border-gray-300 px-4 py-1.5 rounded-lg text-sm hover:bg-gray-100">
-              Đã xử lý
-            </button>
-          </div>
-        </div>
+        ))}
       </div>
     </div>
   );
