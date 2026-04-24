@@ -3,8 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlserver"
-  // CHỈ để dòng này, không dán link trực tiếp vào đây
+  provider = "postgresql" // Đảm bảo đã đổi từ sqlserver sang postgresql
   url      = env("DATABASE_URL")
 }
 
