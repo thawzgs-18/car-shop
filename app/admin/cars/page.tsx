@@ -1,4 +1,4 @@
-import Sidebar from "@/components/admin/Sidebar"; // Bạn sẽ tạo component này sau
+import Sidebar from "@/app/components/admin/Sidebar";
 
 export default function AdminLayout({
   children,

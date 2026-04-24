@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma"; // File khởi tạo prisma client
+import  prisma  from "@/lib/prisma"; // File khởi tạo prisma client
 import { auth } from "@/auth";
 
 export async function GET() {
