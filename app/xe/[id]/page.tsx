@@ -1,11 +1,15 @@
-import { CARS } from "../../data/cars";
-import { MapPin, Calendar, Gauge, Fuel, Phone, CheckCircle2 } from "lucide-react";
+import { CARS } from "@/app/data/cars";
+import { MapPin, Calendar, Gauge, Fuel, Phone, Lock } from "lucide-react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import { auth } from "@/auth"; // Thêm import auth
+import LoginButton from "@/app/components/LoginButton"; // Đảm bảo đường dẫn này đúng với dự án của bạn
 
-// Thêm async vào function
 export default async function CarDetailPage({ params }: { params: Promise<{ id: string }> }) {
   
+  // Lấy thông tin session từ Server Side
+  const session = await auth();
+
   // Giải nén params bằng await
   const { id } = await params;
 
@@ -69,46 +73,60 @@ export default async function CarDetailPage({ params }: { params: Promise<{ id: 
             </div>
           </div>
 
-          <a 
-            href="tel:0865372637"
-            className="w-full bg-red-600 hover:bg-black text-white py-6 rounded-2xl font-black text-2xl transition-all flex items-center justify-center gap-4"
-          >
-            <Phone size={28} />
-            LIÊN HỆ NGAY: 0865.372.637
-          </a>
+          {/* Kiểm soát quyền truy cập tại nút Liên Hệ */}
+          {session ? (
+            <a 
+              href="tel:0865372637"
+              className="w-full bg-red-600 hover:bg-black text-white py-6 rounded-2xl font-black text-2xl transition-all flex items-center justify-center gap-4 shadow-xl shadow-red-200"
+            >
+              <Phone size={28} />
+              LIÊN HỆ NGAY: 0865.372.637
+            </a>
+          ) : (
+            <div className="w-full bg-gray-50 border-2 border-dashed border-gray-200 p-8 rounded-2xl flex flex-col items-center gap-4 text-center">
+              <div className="bg-gray-200 p-3 rounded-full text-gray-500">
+                <Lock size={24} />
+              </div>
+              <div>
+                <p className="font-bold text-gray-800 uppercase tracking-tight">Thông tin liên hệ bị khóa</p>
+                <p className="text-sm text-gray-500">Vui lòng đăng nhập bằng Google để xem số điện thoại và liên hệ người bán.</p>
+              </div>
+              <LoginButton />
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Phần mô tả mở rộng đã được nâng cấp */}
-<div className="border-t border-gray-100 pt-16">
-  <div className="max-w-4xl">
-    <h2 className="text-3xl font-black mb-8 italic uppercase tracking-tight text-gray-900 border-l-8 border-red-600 pl-4">
-      Đặc điểm & Thông số kỹ thuật
-    </h2>
-    
-    <div className="text-gray-600 text-xl leading-relaxed space-y-6 font-medium">
-      <p>
-        Chúng tôi hân hạnh giới thiệu mẫu xe **{car.brand} {car.name}** phiên bản năm **{car.year}**, một biểu tượng của sự kết hợp hoàn hảo giữa hiệu suất vận hành mãnh liệt và thiết kế sang trọng. 
-        Hiện tại, chiếc xe này đang ở tình trạng **{car.status.toLowerCase()}** và đã được đội ngũ kỹ thuật của CARSHOP kiểm định nghiêm ngặt qua 160 điểm chi tiết để đảm bảo chất lượng tốt nhất khi bàn giao.
-      </p>
-      
-      <p>
-        Về thông số vận hành, xe thuộc dòng **{car.type}** với khả năng thích nghi linh hoạt trên nhiều địa hình khác nhau, đặc biệt phù hợp với điều kiện giao thông tại **{car.location}**. 
-        Với số Kilomet đã đi là **{car.km === 0 ? "0km (xe mới hoàn toàn)" : `${car.km.toLocaleString()} km`}**, hệ thống động cơ và khung gầm vẫn giữ được độ nguyên bản, mang lại cảm giác lái chắc chắn và êm ái như những ngày đầu.
-      </p>
+      {/* Phần mô tả mở rộng */}
+      <div className="border-t border-gray-100 pt-16">
+        <div className="max-w-4xl">
+          <h2 className="text-3xl font-black mb-8 italic uppercase tracking-tight text-gray-900 border-l-8 border-red-600 pl-4">
+            Đặc điểm & Thông số kỹ thuật
+          </h2>
+          
+          <div className="text-gray-600 text-xl leading-relaxed space-y-6 font-medium">
+            <p>
+              Chúng tôi hân hạnh giới thiệu mẫu xe **{car.brand} {car.name}** phiên bản năm **{car.year}**, một biểu tượng của sự kết hợp hoàn hảo giữa hiệu suất vận hành mãnh liệt và thiết kế sang trọng. 
+              Hiện tại, chiếc xe này đang ở tình trạng **{car.status.toLowerCase()}** và đã được đội ngũ kỹ thuật của CARSHOP kiểm định nghiêm ngặt qua 160 điểm chi tiết để đảm bảo chất lượng tốt nhất khi bàn giao.
+            </p>
+            
+            <p>
+              Về thông số vận hành, xe thuộc dòng **{car.type}** với khả năng thích nghi linh hoạt trên nhiều địa hình khác nhau, đặc biệt phù hợp với điều kiện giao thông tại **{car.location}**. 
+              Với số Kilomet đã đi là **{car.km === 0 ? "0km (xe mới hoàn toàn)" : `${car.km.toLocaleString()} km`}**, hệ thống động cơ và khung gầm vẫn giữ được độ nguyên bản, mang lại cảm giác lái chắc chắn và êm ái như những ngày đầu.
+            </p>
 
-      <p>
-        Nội thất của {car.name} được trang bị các công nghệ hiện đại hàng đầu phân khúc, bao gồm hệ thống giải trí đa phương tiện, các tính năng an toàn chủ động và không gian ngồi rộng rãi, tối ưu hóa sự thoải mái cho mọi hành trình dài. 
-        Quý khách hàng hoàn toàn có thể yên tâm về tính pháp lý khi xe có hồ sơ minh bạch, sẵn sàng sang tên ngay trong ngày.
-      </p>
-      
-      <p>
-        Đừng bỏ lỡ cơ hội sở hữu chiếc {car.brand} đẳng cấp này với mức giá cực kỳ cạnh tranh là **{car.price.toLocaleString('vi-VN')} VNĐ**. 
-        Hãy liên hệ ngay với đội ngũ tư vấn của CARSHOP qua hotline hoặc đến trực tiếp showroom tại {car.location} để trải nghiệm lái thử và nhận những ưu đãi đặc quyền dành riêng cho bạn.
-      </p>
-    </div>
-  </div>
-</div>
+            <p>
+              Nội thất của {car.name} được trang bị các công nghệ hiện đại hàng đầu phân khúc, bao gồm hệ thống giải trí đa phương tiện, các tính năng an toàn chủ động và không gian ngồi rộng rãi, tối ưu hóa sự thoải mái cho mọi hành trình dài. 
+              Quý khách hàng hoàn toàn có thể yên tâm về tính pháp lý khi xe có hồ sơ minh bạch, sẵn sàng sang tên ngay trong ngày.
+            </p>
+            
+            <p>
+              Đừng bỏ lỡ cơ hội sở hữu chiếc {car.brand} đẳng cấp này với mức giá cực kỳ cạnh tranh là **{car.price.toLocaleString('vi-VN')} VNĐ**. 
+              Hãy liên hệ ngay với đội ngũ tư vấn của CARSHOP qua hotline hoặc đến trực tiếp showroom tại {car.location} để trải nghiệm lái thử và nhận những ưu đãi đặc quyền dành riêng cho bạn.
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

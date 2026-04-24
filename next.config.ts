@@ -35,6 +35,10 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'www.usnews.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com', // Để hiển thị avatar Google sau khi đăng nhập
+      },
     ],
   },
 };
