@@ -1,55 +1,72 @@
+import { notFound } from "next/navigation";
 import prisma from "@/lib/prisma";
-import Image from "next/image";
-import Link from "next/link";
+import { FALLBACK_NEWS } from "@/lib/news-data";
 
-// Ép Next.js luôn lấy dữ liệu mới nhất từ Database
 export const dynamic = "force-dynamic";
 
-export default async function CarsPage() {
-  const cars = await prisma.car.findMany({
-    where: { adminStatus: "approved" },
-    orderBy: { createdAt: "desc" },
-  });
+export default async function NewsDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+
+  const dbNews = await prisma.news.findFirst({
+    where: {
+      OR: [{ id }, { slug: id }],
+    },
+    include: {
+      author: {
+        select: { name: true },
+      },
+    },
+  }).catch(() => null);
+
+  const news = dbNews
+    ? {
+        title: dbNews.title,
+        content: dbNews.content,
+        image: dbNews.image || FALLBACK_NEWS[0].image,
+        author: dbNews.author?.name || "Ban biên tập CarShop",
+        createdAt: dbNews.createdAt.toISOString(),
+      }
+    : (() => {
+        const fallback = FALLBACK_NEWS.find((item) => item.id === id || item.slug === id);
+        if (!fallback) return null;
+        return {
+          title: fallback.title,
+          content: fallback.content,
+          image: fallback.image,
+          author: fallback.authorName,
+          createdAt: fallback.createdAt,
+        };
+      })();
+
+  if (!news) {
+    notFound();
+  }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">Danh sách xe đang bán</h1>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {cars.map((car) => (
-          <div key={car.id} className="border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition">
-            <div className="relative h-52">
-              <Image 
-                src={car.image} 
-                alt={car.name} 
-                fill 
-                className="object-cover"
-              />
+    <article className="min-h-screen bg-slate-50 py-12">
+      <div className="container mx-auto max-w-4xl px-4">
+        <div className="overflow-hidden rounded-[36px] border border-slate-200 bg-white shadow-sm">
+          {news.image && (
+            <div className="h-80 bg-slate-200">
+              <img src={news.image} alt={news.title} className="h-full w-full object-cover" />
             </div>
-            <div className="p-5">
-              <div className="flex justify-between items-start mb-2">
-                <h2 className="text-xl font-semibold">{car.name}</h2>
-                <span className="text-red-600 font-bold">
-                  {car.price.toLocaleString('vi-VN')} đ
-                </span>
-              </div>
-              
-              <div className="grid grid-cols-2 gap-2 text-sm text-gray-600 mb-4">
-                <p>📍 {car.location}</p>
-                <p>⚙️ {car.transmission}</p>
-                <p>⛽ {car.fuel}</p>
-                <p>📅 {car.year}</p>
-              </div>
-
-              <Link href={`/cars/${car.id}`}>
-                <button className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">
-                  Xem chi tiết
-                </button>
-              </Link>
+          )}
+          <div className="p-8 md:p-10">
+            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-red-600">
+              {new Date(news.createdAt).toLocaleDateString("vi-VN")}
+            </p>
+            <h1 className="mt-4 text-4xl font-black leading-tight text-slate-900">{news.title}</h1>
+            <p className="mt-3 text-sm font-semibold text-slate-500">{news.author}</p>
+            <div className="prose prose-slate mt-8 max-w-none whitespace-pre-line text-slate-700">
+              {news.content}
             </div>
           </div>
-        ))}
+        </div>
       </div>
-    </div>
+    </article>
   );
 }

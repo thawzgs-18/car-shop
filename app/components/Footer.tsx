@@ -1,81 +1,80 @@
 "use client";
 
 import Link from "next/link";
-// Sử dụng các icon cơ bản để đảm bảo không bị lỗi export
-import { 
-  Mail, 
-  Phone, 
-  MapPin, 
-  Car, 
-  Info,
-  Send,
-  Globe
-} from "lucide-react";
+import { Mail, Phone, MapPin, Car, ArrowRight } from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-900 text-gray-300 pt-16 pb-8">
+    <footer className="mt-20 bg-slate-950 pt-16 pb-8 text-slate-300">
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
-          
-          {/* Cột 1: Giới thiệu */}
+        <div className="mb-10 grid gap-12 lg:grid-cols-[1.4fr_0.8fr_0.8fr_1fr]">
           <div>
-            <Link href="/" className="flex items-center gap-2 mb-6">
-              <Car className="text-red-500 w-8 h-8" />
-              <span className="text-2xl font-black text-white tracking-tighter">CARSHOP</span>
+            <Link href="/" className="mb-6 flex items-center gap-3">
+              <div className="rounded-2xl bg-white/10 p-2">
+                <Car className="h-7 w-7 text-red-500" />
+              </div>
+              <div>
+                <span className="text-2xl font-black tracking-[-0.08em] text-white">CARSHOP</span>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-slate-500">Vietnam car marketplace</p>
+              </div>
             </Link>
-            <p className="text-sm leading-relaxed mb-6">
-              Nền tảng kết nối niềm tin giữa người mua và người bán ô tô hàng đầu Việt Nam.
+            <p className="max-w-md text-sm leading-7 text-slate-400">
+              Nền tảng mua bán ô tô tập trung vào chất lượng tin đăng, dữ liệu rõ ràng và trải nghiệm chốt giao
+              dịch nhanh cho cả người mua lẫn người bán.
             </p>
-            <div className="flex gap-4">
-              {/* Dùng icon Globe và Send thay cho Facebook/Youtube để tránh lỗi build */}
-              <div className="hover:text-red-500 cursor-pointer"><Globe size={20} /></div>
-              <div className="hover:text-red-500 cursor-pointer"><Send size={20} /></div>
-              <div className="hover:text-red-500 cursor-pointer"><Info size={20} /></div>
-            </div>
+            <Link
+              href="/xe"
+              className="mt-6 inline-flex items-center gap-2 text-sm font-bold uppercase tracking-[0.2em] text-white transition hover:text-red-400"
+            >
+              Khám phá kho xe <ArrowRight size={16} />
+            </Link>
           </div>
 
-          {/* Cột 2: Khám phá */}
           <div>
-            <h4 className="text-white font-bold mb-6 uppercase text-sm">Khám phá</h4>
-            <ul className="space-y-4 text-sm">
-              <li><Link href="/gioi-thieu" className="hover:text-red-500 transition">Giới thiệu</Link></li>
-              <li><Link href="/ban-xe" className="hover:text-red-500 transition">Bán xe</Link></li>
-              <li><Link href="/tin-tuc" className="hover:text-red-500 transition">Tin tức</Link></li>
+            <h4 className="mb-5 text-sm font-bold uppercase tracking-[0.25em] text-white">Điều hướng</h4>
+            <ul className="space-y-3 text-sm text-slate-400">
+              <li><Link href="/xe" className="transition hover:text-red-400">Kho xe đang bán</Link></li>
+              <li><Link href="/ban-xe" className="transition hover:text-red-400">Đăng tin bán xe</Link></li>
+              <li><Link href="/tin-tuc" className="transition hover:text-red-400">Tin tức thị trường</Link></li>
+              <li><Link href="/gioi-thieu" className="transition hover:text-red-400">Giới thiệu CarShop</Link></li>
             </ul>
           </div>
 
-          {/* Cột 3: Hỗ trợ */}
           <div>
-            <h4 className="text-white font-bold mb-6 uppercase text-sm">Hỗ trợ</h4>
-            <ul className="space-y-4 text-sm text-gray-400">
-              <li>Quy định đăng tin</li>
-              <li>Chính sách bảo mật</li>
-              <li>Giải quyết khiếu nại</li>
+            <h4 className="mb-5 text-sm font-bold uppercase tracking-[0.25em] text-white">Cam kết</h4>
+            <ul className="space-y-3 text-sm text-slate-400">
+              <li>Tin đăng kiểm duyệt trước khi hiển thị</li>
+              <li>Hỗ trợ định giá và vay mua xe</li>
+              <li>Ưu tiên xe có lịch sử bảo dưỡng rõ ràng</li>
+              <li>Tư vấn thủ tục sang tên tận nơi</li>
             </ul>
           </div>
 
-          {/* Cột 4: Liên hệ */}
           <div>
-            <h4 className="text-white font-bold mb-6 uppercase text-sm">Liên hệ</h4>
-            <ul className="space-y-4 text-sm">
+            <h4 className="mb-5 text-sm font-bold uppercase tracking-[0.25em] text-white">Liên hệ</h4>
+            <ul className="space-y-4 text-sm text-slate-400">
               <li className="flex items-start gap-3">
-                <MapPin className="text-red-500 shrink-0" size={18} />
+                <MapPin className="mt-0.5 shrink-0 text-red-500" size={18} />
                 <span>Phan Đăng Lưu, Kiến An, Hải Phòng</span>
               </li>
               <li className="flex items-center gap-3">
-                <Phone className="text-red-500 shrink-0" size={18} />
-                <span>0865372637</span>
+                <Phone className="shrink-0 text-red-500" size={18} />
+                <span>0865 372 637</span>
               </li>
               <li className="flex items-center gap-3">
-                 <Mail className="text-red-500 shrink-0" size={18} />
-                 <span>pthangg18@gmail.com</span>
+                <Mail className="shrink-0 text-red-500" size={18} />
+                <span>pthangg18@gmail.com</span>
               </li>
             </ul>
           </div>
         </div>
-        <div className="border-t border-gray-800 pt-8 text-center text-xs text-gray-500">
-          <p>© 2026 CARSHOP Việt Nam.</p>
+
+        <div className="flex flex-col gap-3 border-t border-white/10 pt-6 text-xs text-slate-500 md:flex-row md:items-center md:justify-between">
+          <p>© 2026 CarShop Vietnam. Minh bạch thông tin, tối ưu giao dịch.</p>
+          <div className="flex gap-5">
+            <span>Hotline hỗ trợ 24/7</span>
+            <span>Hệ thống kiểm duyệt nội dung chủ động</span>
+          </div>
         </div>
       </div>
     </footer>

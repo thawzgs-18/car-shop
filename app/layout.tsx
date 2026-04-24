@@ -1,27 +1,23 @@
-import type { Metadata } from "next"; // Import kiểu dữ liệu Metadata
+import type { Metadata } from "next";
 import "./globals.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 
-// Cấu hình tên hiển thị trên tab trình duyệt tại đây
 export const metadata: Metadata = {
-  title: "Carshop - Sàn giao dịch ô tô số 1",
-  description: "Nền tảng kết nối người mua và người bán ô tô hàng đầu Việt Nam",
+  title: "CarShop - San giao dich o to",
+  description: "Nen tang mua ban o to voi kho xe da kiem duyet va quy trinh dang tin minh bach.",
 };
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
     <html lang="vi">
-      <body className="flex flex-col min-h-screen">
+      <body className="flex min-h-screen flex-col">
         <Header />
-        {/* main grow giúp đẩy Footer xuống cuối trang khi nội dung ngắn */}
-        <main className="flex-grow">
-          {children}
-        </main>
+        <main className="flex-grow">{children}</main>
         <Footer />
       </body>
     </html>

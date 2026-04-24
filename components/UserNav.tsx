@@ -3,82 +3,63 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { UserCircle, ChevronDown, LogOut, Settings } from "lucide-react";
+import { UserCircle, ChevronDown, LogOut, Settings, ShieldCheck } from "lucide-react";
 import { signOut } from "next-auth/react";
-import { ShieldCheck } from 'lucide-react';
 
-export default function UserNav({ session }: { session: any }) {
+type UserNavSession = {
+  user?: {
+    image?: string | null;
+    name?: string | null;
+    email?: string | null;
+    role?: string | null;
+  } | null;
+} | null;
+
+export default function UserNav({ session }: { session: UserNavSession }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const isAdmin = session?.user?.email === "thang18012005@gmail.com";
+  const isAdmin = session?.user?.role === "ADMIN" || session?.user?.email === "admin@carshop.com";
 
   return (
     <div className="relative">
-      <button 
+      <button
         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-        className="flex items-center gap-1.5 p-1 rounded-full hover:bg-gray-50 transition outline-none"
+        className="flex items-center gap-1.5 rounded-full p-1 outline-none transition hover:bg-gray-50"
       >
         {session?.user?.image ? (
-          <Image 
-            src={session.user.image} 
-            alt="Avatar" 
-            width={36} 
-            height={36} 
-            className="rounded-full border-2 border-red-500"
-          />
+          <Image src={session.user.image} alt="Avatar" width={36} height={36} className="rounded-full border-2 border-red-500" />
         ) : (
-          <UserCircle className="text-gray-500 w-9 h-9" />
+          <UserCircle className="h-9 w-9 text-gray-500" />
         )}
-        <ChevronDown className={`text-gray-400 w-4 h-4 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
+        <ChevronDown className={`h-4 w-4 text-gray-400 transition-transform ${isDropdownOpen ? "rotate-180" : ""}`} />
       </button>
 
       {isDropdownOpen && (
-        <div className="absolute right-0 top-full mt-3 w-48 bg-white rounded-2xl shadow-xl border border-gray-100 p-2 z-50">
+        <div className="absolute right-0 top-full z-50 mt-3 w-56 rounded-2xl border border-gray-100 bg-white p-2 shadow-xl">
           {session ? (
-            // Nội dung khi ĐÃ ĐĂNG NHẬP
             <div className="space-y-1">
-              <div className="px-4 py-2 border-b border-gray-50 mb-1">
-                <p className="text-[10px] text-gray-400 font-bold uppercase">Xin chào</p>
-                <p className="text-sm font-black text-gray-800 truncate">{session.user.name}</p>
+              <div className="mb-1 border-b border-gray-50 px-4 py-2">
+                <p className="text-[10px] font-bold uppercase text-gray-400">Xin chào</p>
+                <p className="truncate text-sm font-black text-gray-800">{session.user?.name || session.user?.email}</p>
               </div>
               {isAdmin && (
-            <Link 
-              href="/admin/dashboard" 
-              className="flex items-center gap-2 px-4 py-2.5 text-sm font-bold text-blue-600 rounded-lg hover:bg-blue-50 transition"
-              onClick={() => setIsDropdownOpen(false)}
-            >
-              <ShieldCheck size={16} /> Quản lý hệ thống
-            </Link>
-          )}
-              <Link 
-                href="/profile" 
-                className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-gray-700 rounded-lg hover:bg-red-50 hover:text-red-600 transition"
-                onClick={() => setIsDropdownOpen(false)}
-              >
+                <Link href="/admin/cars" className="flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-bold text-blue-600 transition hover:bg-blue-50">
+                  <ShieldCheck size={16} /> Quản lý hệ thống
+                </Link>
+              )}
+              <Link href="/profile" className="flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold text-gray-700 transition hover:bg-red-50 hover:text-red-600">
                 <Settings size={16} /> Trang cá nhân
               </Link>
-              <button 
-                onClick={() => signOut()}
-                className="flex items-center gap-2 w-full px-4 py-2.5 text-sm font-semibold text-red-600 rounded-lg hover:bg-red-50 transition"
-              >
+              <button onClick={() => signOut()} className="flex w-full items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold text-red-600 transition hover:bg-red-50">
                 <LogOut size={16} /> Đăng xuất
               </button>
             </div>
           ) : (
-            // QUAY LẠI NHƯ CŨ KHI CHƯA ĐĂNG NHẬP
             <div className="space-y-1">
-              <Link 
-                href="/login" 
-                className="block px-4 py-2.5 text-sm font-bold text-gray-700 rounded-lg hover:bg-red-50 hover:text-red-600 transition"
-                onClick={() => setIsDropdownOpen(false)}
-              >
-                Đăng Nhập
+              <Link href="/login" className="block rounded-lg px-4 py-2.5 text-sm font-bold text-gray-700 transition hover:bg-red-50 hover:text-red-600">
+                Đăng nhập
               </Link>
-              <Link 
-                href="/register" 
-                className="block px-4 py-2.5 text-sm font-bold text-gray-700 rounded-lg hover:bg-red-50 hover:text-red-600 transition"
-                onClick={() => setIsDropdownOpen(false)}
-              >
-                Đăng Ký
+              <Link href="/register" className="block rounded-lg px-4 py-2.5 text-sm font-bold text-gray-700 transition hover:bg-red-50 hover:text-red-600">
+                Đăng ký
               </Link>
             </div>
           )}

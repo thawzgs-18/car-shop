@@ -1,58 +1,51 @@
 "use client";
 
 import { Search } from "lucide-react";
+import type { CarListing } from "@/lib/car-types";
 
 interface SearchBarProps {
+  cars: CarListing[];
   onSearchChange: (value: string) => void;
   onBrandChange: (value: string) => void;
   onPriceChange: (value: string) => void;
 }
 
-export default function SearchBar({ 
-  onSearchChange, 
-  onBrandChange, 
-  onPriceChange 
+export default function SearchBar({
+  cars,
+  onSearchChange,
+  onBrandChange,
+  onPriceChange,
 }: SearchBarProps) {
-  
-  // Danh sách các hãng xe thực tế có trong dữ liệu CARS của bạn
-  const brands = [
-    "Toyota", "Hyundai", "Honda", "Mazda", "Kia", 
-    "Mitsubishi", "Ford", "Mercedes-Benz", "BMW", 
-    "Audi", "Lexus", "Porsche", "Volvo", "Land Rover", 
-    "VinFast", "Tesla", "Volkswagen", "Subaru", 
-    "Peugeot", "Mini", "Jeep"
-  ];
+  const brands = [...new Set(cars.map((car) => car.brand))].sort((a, b) => a.localeCompare(b, "vi"));
 
   return (
-    <div className="container mx-auto px-4 -mt-10 relative z-30">
-      <div className="bg-white p-4 rounded-2xl shadow-2xl border border-gray-100">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-          
-          {/* 1. Ô tìm kiếm theo tên */}
+    <div className="container relative z-30 mx-auto -mt-14 px-4">
+      <div className="rounded-[32px] border border-white/50 bg-white/90 p-4 shadow-[0_28px_70px_-34px_rgba(15,23,42,0.45)] backdrop-blur">
+        <div className="grid grid-cols-1 gap-3 lg:grid-cols-4">
           <div className="relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-            <input 
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+            <input
               type="text"
-              placeholder="Nhập tên xe bạn cần tìm..."
-              className="w-full bg-gray-50 pl-11 pr-4 py-4 outline-none rounded-xl text-sm font-medium border border-transparent focus:border-red-500 focus:bg-white transition-all"
+              placeholder="Tìm theo tên xe hoặc phiên bản"
+              className="w-full rounded-2xl border border-transparent bg-slate-100/80 py-4 pr-4 pl-11 text-sm font-medium outline-none transition-all focus:border-red-500 focus:bg-white"
               onChange={(e) => onSearchChange(e.target.value)}
             />
           </div>
 
-          {/* 2. Lọc theo hãng xe */}
-          <select 
-            className="w-full bg-gray-50 px-4 py-4 outline-none rounded-xl text-sm font-semibold border border-transparent focus:border-red-500 focus:bg-white transition-all appearance-none cursor-pointer"
+          <select
+            className="w-full cursor-pointer rounded-2xl border border-transparent bg-slate-100/80 px-4 py-4 text-sm font-semibold outline-none transition-all focus:border-red-500 focus:bg-white"
             onChange={(e) => onBrandChange(e.target.value)}
           >
             <option value="Tất cả">Tất cả hãng xe</option>
-            {brands.sort().map((brand) => (
-              <option key={brand} value={brand}>{brand}</option>
+            {brands.map((brand) => (
+              <option key={brand} value={brand}>
+                {brand}
+              </option>
             ))}
           </select>
 
-          {/* 3. Lọc theo khoảng giá */}
-          <select 
-            className="w-full bg-gray-50 px-4 py-4 outline-none rounded-xl text-sm font-semibold border border-transparent focus:border-red-500 focus:bg-white transition-all appearance-none cursor-pointer"
+          <select
+            className="w-full cursor-pointer rounded-2xl border border-transparent bg-slate-100/80 px-4 py-4 text-sm font-semibold outline-none transition-all focus:border-red-500 focus:bg-white"
             onChange={(e) => onPriceChange(e.target.value)}
           >
             <option value="Tất cả">Mọi mức giá</option>
@@ -61,12 +54,10 @@ export default function SearchBar({
             <option value="Trên 1 tỷ">Trên 1 tỷ</option>
           </select>
 
-          {/* 4. Nút Tìm kiếm (Để trang trí hoặc kích hoạt lọc nhanh) */}
-          <button className="bg-red-600 text-white font-bold rounded-xl hover:bg-red-700 transition-colors py-4 flex items-center justify-center gap-2 shadow-lg shadow-red-200">
+          <button className="flex items-center justify-center gap-2 rounded-2xl bg-red-600 py-4 font-bold text-white shadow-lg shadow-red-200 transition-colors hover:bg-red-700">
             <Search size={20} />
-            TÌM KIẾM NGAY
+            TÌM XE NGAY
           </button>
-
         </div>
       </div>
     </div>

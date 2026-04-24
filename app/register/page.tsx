@@ -7,14 +7,11 @@ import { User, Mail, Lock, Eye, EyeOff, Car, Loader2 } from "lucide-react";
 
 export default function RegisterPage() {
   const router = useRouter();
-  
-  // 1. Quản lý State cho Form
   const [formData, setFormData] = useState({ name: "", email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // 2. Hàm xử lý Đăng ký
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -30,13 +27,11 @@ export default function RegisterPage() {
       const data = await res.json();
 
       if (res.ok) {
-        // Có thể dùng thư viện toast để đẹp hơn, ở đây dùng alert đơn giản
-        alert("Đăng ký thành công!");
-        router.push("/login"); // Chuyển hướng sang trang đăng nhập
+        router.push("/login");
       } else {
         setError(data.message || "Đã có lỗi xảy ra");
       }
-    } catch (err) {
+    } catch {
       setError("Không thể kết nối đến máy chủ");
     } finally {
       setLoading(false);
@@ -44,39 +39,35 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4">
-      <div className="max-w-md w-full bg-white rounded-3xl shadow-xl p-8 border border-gray-100">
-        
-        {/* Header */}
-        <div className="text-center mb-8">
-          <div className="flex justify-center mb-4">
-            <div className="bg-red-50 p-3 rounded-2xl">
-              <Car className="text-red-600 w-10 h-10" />
+    <div className="flex min-h-screen items-center justify-center bg-[linear-gradient(180deg,_#fff7ed_0%,_#f8fafc_100%)] px-4 py-12">
+      <div className="w-full max-w-md rounded-[32px] border border-gray-100 bg-white p-8 shadow-xl">
+        <div className="mb-8 text-center">
+          <div className="mb-4 flex justify-center">
+            <div className="rounded-2xl bg-red-50 p-3">
+              <Car className="h-10 w-10 text-red-600" />
             </div>
           </div>
-          <h2 className="text-3xl font-black text-gray-900 uppercase tracking-tighter italic">
+          <h2 className="text-3xl font-black uppercase tracking-tighter italic text-gray-900">
             Tạo tài khoản
           </h2>
-          <p className="text-gray-500 mt-2 text-sm">Gia nhập cộng đồng CARSHOP ngay hôm nay</p>
+          <p className="mt-2 text-sm text-gray-500">Gia nhập cộng đồng CarShop để đăng bán và quản lý tin xe dễ hơn.</p>
         </div>
 
-        {/* Thông báo lỗi nếu có */}
         {error && (
-          <div className="mb-4 p-3 bg-red-50 border-l-4 border-red-500 text-red-600 text-sm font-medium">
+          <div className="mb-4 border-l-4 border-red-500 bg-red-50 p-3 text-sm font-medium text-red-600">
             {error}
           </div>
         )}
 
         <form className="space-y-5" onSubmit={handleSubmit}>
-          {/* Input Họ tên */}
           <div>
-            <label className="block text-sm font-bold text-gray-700 mb-1">Họ và tên</label>
+            <label className="mb-1 block text-sm font-bold text-gray-700">Họ và tên</label>
             <div className="relative">
               <User className="absolute left-3 top-3 text-gray-400" size={18} />
-              <input 
-                type="text" 
+              <input
+                type="text"
                 required
-                className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 outline-none transition" 
+                className="w-full rounded-xl border border-gray-200 bg-gray-50 py-3 pr-4 pl-10 outline-none transition focus:ring-2 focus:ring-red-500"
                 placeholder="Nguyễn Văn A"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -84,15 +75,14 @@ export default function RegisterPage() {
             </div>
           </div>
 
-          {/* Input Email */}
           <div>
-            <label className="block text-sm font-bold text-gray-700 mb-1">Email</label>
+            <label className="mb-1 block text-sm font-bold text-gray-700">Email</label>
             <div className="relative">
               <Mail className="absolute left-3 top-3 text-gray-400" size={18} />
-              <input 
-                type="email" 
+              <input
+                type="email"
                 required
-                className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 outline-none transition" 
+                className="w-full rounded-xl border border-gray-200 bg-gray-50 py-3 pr-4 pl-10 outline-none transition focus:ring-2 focus:ring-red-500"
                 placeholder="example@gmail.com"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -100,15 +90,14 @@ export default function RegisterPage() {
             </div>
           </div>
 
-          {/* Input Mật khẩu */}
           <div>
-            <label className="block text-sm font-bold text-gray-700 mb-1">Mật khẩu</label>
+            <label className="mb-1 block text-sm font-bold text-gray-700">Mật khẩu</label>
             <div className="relative">
               <Lock className="absolute left-3 top-3 text-gray-400" size={18} />
-              <input 
-                type={showPassword ? "text" : "password"} 
+              <input
+                type={showPassword ? "text" : "password"}
                 required
-                className="w-full pl-10 pr-10 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 outline-none transition" 
+                className="w-full rounded-xl border border-gray-200 bg-gray-50 py-3 pr-10 pl-10 outline-none transition focus:ring-2 focus:ring-red-500"
                 placeholder="••••••••"
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
@@ -123,11 +112,10 @@ export default function RegisterPage() {
             </div>
           </div>
 
-          {/* Nút Đăng ký */}
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             disabled={loading}
-            className="w-full bg-red-600 text-white py-3 rounded-xl font-bold hover:bg-red-700 transition shadow-lg shadow-red-200 uppercase tracking-wider flex items-center justify-center gap-2 disabled:bg-red-400"
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-red-600 py-3 font-bold uppercase tracking-wider text-white shadow-lg shadow-red-200 transition hover:bg-red-700 disabled:bg-red-400"
           >
             {loading ? (
               <>
@@ -140,9 +128,9 @@ export default function RegisterPage() {
           </button>
         </form>
 
-        <p className="text-center mt-6 text-sm text-gray-500">
+        <p className="mt-6 text-center text-sm text-gray-500">
           Đã có tài khoản?{" "}
-          <Link href="/login" className="text-red-600 font-bold hover:underline">Đăng nhập</Link>
+          <Link href="/login" className="font-bold text-red-600 hover:underline">Đăng nhập</Link>
         </p>
       </div>
     </div>

@@ -1,55 +1,46 @@
-import prisma from "@/lib/prisma";
-import Image from "next/image";
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+import CarCard from "@/app/components/CarCard";
+import { getApprovedCars } from "@/lib/car-data";
 
-// Ép Next.js luôn lấy dữ liệu mới nhất từ Database
 export const dynamic = "force-dynamic";
 
 export default async function CarsPage() {
-  const cars = await prisma.car.findMany({
-    where: { adminStatus: "approved" },
-    orderBy: { createdAt: "desc" },
-  });
+  const cars = await getApprovedCars();
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">Danh sách xe đang bán</h1>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {cars.map((car) => (
-          <div key={car.id} className="border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition">
-            <div className="relative h-52">
-              <Image 
-                src={car.image} 
-                alt={car.name} 
-                fill 
-                className="object-cover"
-              />
-            </div>
-            <div className="p-5">
-              <div className="flex justify-between items-start mb-2">
-                <h2 className="text-xl font-semibold">{car.name}</h2>
-                <span className="text-red-600 font-bold">
-                  {car.price.toLocaleString('vi-VN')} đ
-                </span>
-              </div>
-              
-              <div className="grid grid-cols-2 gap-2 text-sm text-gray-600 mb-4">
-                <p>📍 {car.location}</p>
-                <p>⚙️ {car.transmission}</p>
-                <p>⛽ {car.fuel}</p>
-                <p>📅 {car.year}</p>
-              </div>
-
-              <Link href={`/cars/${car.id}`}>
-                <button className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">
-                  Xem chi tiết
-                </button>
-              </Link>
-            </div>
+    <div className="min-h-screen bg-slate-50">
+      <section className="bg-[linear-gradient(135deg,_#111827,_#1f2937_45%,_#7f1d1d)] py-16 text-white">
+        <div className="container mx-auto px-4">
+          <p className="text-sm font-semibold uppercase tracking-[0.3em] text-white/60">Kho xe CarShop</p>
+          <h1 className="mt-4 max-w-3xl text-5xl font-black uppercase tracking-[-0.05em]">Danh sách xe đang mở bán</h1>
+          <p className="mt-5 max-w-2xl text-base leading-7 text-white/75">
+            Toàn bộ xe hiển thị tại đây đều lấy từ cùng một nguồn dữ liệu của hệ thống, ưu tiên xe đã được kiểm
+            duyệt và sắp xếp theo tin mới nhất.
+          </p>
+          <div className="mt-8 inline-flex rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-medium text-white/80">
+            {cars.length} xe đang hiển thị
           </div>
-        ))}
-      </div>
+        </div>
+      </section>
+
+      <section className="container mx-auto px-4 py-10">
+        <div className="mb-8 flex items-center justify-between gap-4">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-[0.3em] text-red-600">Đã duyệt</p>
+            <h2 className="text-3xl font-black text-slate-900">Kho xe mới nhất</h2>
+          </div>
+          <Link href="/ban-xe" className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-[0.2em] text-slate-900 transition hover:text-red-600">
+            Đăng xe của bạn <ArrowRight size={16} />
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+          {cars.map((car) => (
+            <CarCard key={car.id} car={car} />
+          ))}
+        </div>
+      </section>
     </div>
   );
 }
