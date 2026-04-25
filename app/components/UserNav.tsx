@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { UserCircle, ChevronDown, LogOut, ShieldCheck } from "lucide-react";
 import { signOut } from "next-auth/react";
+import { isAdminEmail } from "@/lib/admin";
 
 type UserNavSession = {
   user?: {
@@ -17,7 +18,7 @@ type UserNavSession = {
 
 export default function UserNav({ session }: { session: UserNavSession }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const isAdmin = session?.user?.role === "ADMIN" || session?.user?.email === "admin@carshop.com";
+  const isAdmin = session?.user?.role === "ADMIN" || isAdminEmail(session?.user?.email);
 
   return (
     <div className="relative">
