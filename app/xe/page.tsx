@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import CarCard from "@/app/components/CarCard";
+import CarGridLoadMore from "@/app/components/CarGridLoadMore";
 import { getApprovedCars } from "@/lib/car-data";
 
 export const dynamic = "force-dynamic";
@@ -35,11 +35,7 @@ export default async function CarsPage() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {cars.map((car) => (
-            <CarCard key={car.id} car={car} />
-          ))}
-        </div>
+        <CarGridLoadMore cars={cars} batchSize={12} />
       </section>
     </div>
   );
